@@ -8,9 +8,8 @@
 #define ROUNDS 10
 #define FORK_COUNT 5
 /*
-Asymmetric solution is to have the even numbered
-philosophers pick up in left-right order, while
-odd-numbered pick up in right-left order
+Turns out, this is actually Dijkstra's solution where philosophers either take 
+both when available, or wait.
 */
 
 pthread_mutex_t mutex;
@@ -48,8 +47,8 @@ void* philosopherProcess(void* arg) {
             --philosopher.time;
             if (philosopher.time <= 0) {
                 pthread_mutex_lock(&mutex);
-                std::cout << "Philosopher " << id << " is now Thinking\n";
                 server->returnForks(id);
+                std::cout << "Philosopher " << id << " is now Thinking\n";
                 pthread_cond_broadcast(&cond_var);
 
                 pthread_mutex_unlock(&mutex);

@@ -12,27 +12,11 @@ DiningServer::Philosopher::Philosopher() : id {m_next_id},
 
 /* Even: left-right; Odd: right-left */
 void DiningServer::takeForks(int philosopherNumber) {
-    if (philosopherNumber % 2 == 0) {
-        if ( !philosophers[philosopherNumber].left ) {
-            takeLeftFork(philosopherNumber);
-        }
-        else if ( !philosophers[philosopherNumber].right ) {
-            takeRightFork(philosopherNumber);
-        }
-    }
-    else if ( philosopherNumber % 2 == 1) {
-        if ( !philosophers[philosopherNumber].right ) {
-            takeRightFork(philosopherNumber);
-        }
-        else if ( !philosophers[philosopherNumber].left ) {
-            takeLeftFork(philosopherNumber);
-        }
-
-    }
+    takeLeftFork(philosopherNumber);
+    takeRightFork(philosopherNumber);
 }
 
 void DiningServer::takeLeftFork(int philosopherNumber) {
-
     if (forks[philosopherNumber] == philosopherNumber || forks[philosopherNumber] == -1) {
         philosophers[philosopherNumber].left = true;
         forks[philosopherNumber] = philosopherNumber;
@@ -62,3 +46,10 @@ bool DiningServer::bothAvailable(int philosopherNumber) {
     ;
 }
 
+void DiningServer::print_forks() {
+    std::cout << "[";
+    for (const auto i : forks) {
+        std::cout << i << ",";
+    }
+    std::cout << "]\n";
+}

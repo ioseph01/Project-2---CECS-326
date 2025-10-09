@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 #include <stdlib.h>
 
 #pragma once
@@ -29,5 +30,7 @@ struct DiningServer {
     bool bothAvailable(int philosopherNumber);
     std::vector<Philosopher> philosophers = std::vector<Philosopher>(5);
     std::vector<int> forks = std::vector<int>(5,-1);
+
+    void print_forks();
 };
 
