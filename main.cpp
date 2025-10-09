@@ -22,6 +22,7 @@ struct ThreadParam {
     int id;
 };
 
+// The main philosopher decision tree
 void* philosopherProcess(void* arg) {
     ThreadParam* param = (ThreadParam*) arg;
     DiningServer* server = param->server;
