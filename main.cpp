@@ -16,7 +16,7 @@ odd-numbered pick up in right-left order
 pthread_mutex_t mutex;
 pthread_cond_t cond_var;
 
-
+// Philosopher thread wrapper
 struct ThreadParam {
     DiningServer* server;
     int id;
