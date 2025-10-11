@@ -1,8 +1,9 @@
+#pragma once
+
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
 
-#pragma once
 
 enum class State {Thinking, Hungry, Eating};
 
@@ -15,7 +16,6 @@ struct DiningServer {
         Philosopher();
         State state {};
         int id {}, rounds{}, time{};
-        bool right{}, left{};
             
     private:
         static int m_next_id;
