@@ -7,6 +7,8 @@
 
 #define ROUNDS 10
 #define FORK_COUNT 5
+#define LOWER 3
+#define UPPER 5
 /*
 Turns out, this is actually Dijkstra's solution where philosophers either take 
 both when available, or wait.
@@ -33,7 +35,7 @@ void* philosopherProcess(void* arg) {
             sleep(1);
             --philosopher.time;
             if (philosopher.time <= 0) {
-                philosopher.time = random_int(1,5);
+                philosopher.time = random_int(LOWER,UPPER);
                 philosopher.state = State::Hungry;
 
                 pthread_mutex_lock(&mutex);
@@ -54,7 +56,7 @@ void* philosopherProcess(void* arg) {
                 pthread_mutex_unlock(&mutex);
                 philosopher.state = State::Thinking;
                 ++philosopher.rounds;
-                philosopher.time = random_int(1,5);
+                philosopher.time = random_int(LOWER,UPPER);
             }
         }
        
