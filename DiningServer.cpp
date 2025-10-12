@@ -7,7 +7,7 @@ int random_int(int min, int max) {
 int DiningServer::Philosopher::m_next_id = 0;
 
 DiningServer::Philosopher::Philosopher() : id {m_next_id}, 
-    time {random_int(1,5)}, state {State::Thinking}, rounds {0}
+    time {10}, state {State::Thinking}, rounds {0}
     { m_next_id++; }
 
 void DiningServer::takeForks(int philosopherNumber) {
