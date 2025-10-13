@@ -49,6 +49,7 @@ void* philosopherProcess(void* arg) {
             --philosopher.time;
             if (philosopher.time <= 0) {
                 pthread_mutex_lock(&mutex);
+
                 server->returnForks(id);
                 std::cout << "Philosopher " << id << " is now Thinking\n";
                 pthread_cond_broadcast(&cond_var);
@@ -62,11 +63,13 @@ void* philosopherProcess(void* arg) {
        
         else if (philosopher.state == State::Hungry) {
             pthread_mutex_lock(&mutex);
+
             while (!server->bothAvailable(id)) {
                 pthread_cond_wait(&cond_var, &mutex);
             }
             server->takeForks(id);
             std::cout << "Philosopher " << id << " is now Eating\n";
+            
             pthread_mutex_unlock(&mutex);
             philosopher.state = State::Eating;
         }
