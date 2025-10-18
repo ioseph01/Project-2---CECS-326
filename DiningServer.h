@@ -1,13 +1,12 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
-#include <stdlib.h>
+#include <chrono>
 
 
 enum class State {Thinking, Hungry, Eating};
 
-int random_int(int min, int max);
+long random_long(long min, long max);
 
 struct DiningServer {
     
@@ -15,7 +14,8 @@ struct DiningServer {
     struct Philosopher {
         Philosopher();
         State state {};
-        int id {}, rounds{}, time{};
+        int id {}, rounds{};
+        long time{};
             
     private:
         static int m_next_id;
@@ -30,7 +30,6 @@ struct DiningServer {
     bool bothAvailable(int philosopherNumber);
     std::vector<Philosopher> philosophers = std::vector<Philosopher>(5);
     std::vector<int> forks = std::vector<int>(5,-1);
-
     void print_forks();
 };
 

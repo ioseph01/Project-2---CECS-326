@@ -1,13 +1,19 @@
 #include "DiningServer.h"
+#include <iostream>
+#include <random>
 
-int random_int(int min, int max) {
-    return rand() % (max - min + 1) + min;
+
+long random_long(long min, long max) {
+    static std::random_device rd {};           
+    static std::mt19937_64 engine {rd()};    
+    std::uniform_int_distribution<long> result {min, max};
+    return result(engine);
 }
 
 int DiningServer::Philosopher::m_next_id = 0;
 
 DiningServer::Philosopher::Philosopher() : id {m_next_id}, 
-    time {10}, state {State::Thinking}, rounds {0}
+    time {random_long(5000,10000)}, state {State::Thinking}, rounds {0} 
     { m_next_id++; }
 
 void DiningServer::takeForks(int philosopherNumber) {
@@ -18,6 +24,8 @@ void DiningServer::takeForks(int philosopherNumber) {
 void DiningServer::takeLeftFork(int philosopherNumber) {
     if (forks[philosopherNumber] == philosopherNumber || forks[philosopherNumber] == -1) {
         forks[philosopherNumber] = philosopherNumber;
+        std::cout << "\tFork " << philosopherNumber << " is with Philosopher #" << philosopherNumber 
+        << "\n";
     }
 }
 
@@ -25,6 +33,8 @@ void DiningServer::takeRightFork(int philosopherNumber) {
     int right = (philosopherNumber + 1) % forks.size();
     if (forks[right] == -1 || forks[right] == philosopherNumber) {
         forks[right] = philosopherNumber;
+        std::cout << "\tFork " << right << " is with Philosopher #" << philosopherNumber 
+        << "\n";
     }
 }
 
@@ -48,3 +58,5 @@ void DiningServer::print_forks() {
     }
     std::cout << "]\n";
 }
+
+

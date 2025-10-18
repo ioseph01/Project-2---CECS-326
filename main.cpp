@@ -5,10 +5,10 @@
 #include "DiningServer.h"
 #include <iostream>
 
-#define ROUNDS 10
+#define ROUNDS 20
 #define FORK_COUNT 5
-#define LOWER 3
-#define UPPER 5
+#define LOWER 3000
+#define UPPER 5000
 /*
 Turns out, this is actually Dijkstra's solution where philosophers either take 
 both when available, or wait.
@@ -16,6 +16,13 @@ both when available, or wait.
 
 pthread_mutex_t mutex;
 pthread_cond_t cond_var;
+
+void sleep_ms(long milliseconds) {
+    struct timespec req;
+    req.tv_sec = milliseconds / 1000;                    
+    req.tv_nsec = (milliseconds % 1000) * 1000000L;
+    nanosleep(&req, nullptr);
+}
 
 // Philosopher thread wrapper
 struct ThreadParam {
@@ -30,35 +37,40 @@ void* philosopherProcess(void* arg) {
     int id = param->id;
     DiningServer::Philosopher& philosopher = server->philosophers[id];
 
+
+    pthread_mutex_lock(&mutex);
+    std::cout << "Philosopher #" << id << " is now Thinking\n";
+    pthread_mutex_unlock(&mutex);
+    
     while (philosopher.rounds < ROUNDS) {
         if (philosopher.state == State::Thinking) {
-            sleep(1);
-            --philosopher.time;
-            if (philosopher.time <= 0) {
-                philosopher.time = random_int(LOWER,UPPER);
-                philosopher.state = State::Hungry;
+            sleep_ms(philosopher.time);
+            philosopher.state = State::Hungry;
 
-                pthread_mutex_lock(&mutex);
-                std::cout << "Philosopher " << id << " is now Hungry\n";
-                pthread_mutex_unlock(&mutex);
+            pthread_mutex_lock(&mutex);
+            std::cout << "Philosopher #" << id << " thought for " 
+            << philosopher.time / 1000.0
+            << " seconds and is now Hungry\n";
+            pthread_mutex_unlock(&mutex);
 
-            }
         }
         else if (philosopher.state == State::Eating) {
-            sleep(1);
-            --philosopher.time;
-            if (philosopher.time <= 0) {
-                pthread_mutex_lock(&mutex);
+            sleep_ms(philosopher.time);
+            pthread_mutex_lock(&mutex);
 
-                server->returnForks(id);
-                std::cout << "Philosopher " << id << " is now Thinking\n";
-                pthread_cond_broadcast(&cond_var);
+            server->returnForks(id);
+            std::cout << "Philosopher #" << id << " has ate for " 
+            << philosopher.time / 1000.0
+            << " seconds and is now Thinking\n";
+            pthread_cond_broadcast(&cond_var);
 
-                pthread_mutex_unlock(&mutex);
-                philosopher.state = State::Thinking;
-                ++philosopher.rounds;
-                philosopher.time = random_int(LOWER,UPPER);
-            }
+            pthread_mutex_unlock(&mutex);
+
+            philosopher.state = State::Thinking;
+            ++philosopher.rounds;
+            philosopher.time = random_long(LOWER, UPPER);
+
+                
         }
        
         else if (philosopher.state == State::Hungry) {
@@ -68,10 +80,11 @@ void* philosopherProcess(void* arg) {
                 pthread_cond_wait(&cond_var, &mutex);
             }
             server->takeForks(id);
-            std::cout << "Philosopher " << id << " is now Eating\n";
+            std::cout << "Philosopher #" << id << " is now Eating\n";
             
             pthread_mutex_unlock(&mutex);
             philosopher.state = State::Eating;
+            philosopher.time = random_long(LOWER, UPPER);
         }
         
     }
@@ -82,7 +95,7 @@ void* philosopherProcess(void* arg) {
 
 
 int main() {
-    std::cout << "Starting Program!\n";
+    std::cout << "Starting Dining Philosophers with Dijkstra's Solution!\n";
     DiningServer server;
     std::vector<ThreadParam> params;
     for (int i = 0; i < 5; ++i) {
