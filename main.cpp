@@ -8,11 +8,11 @@ both when available, or wait.
 #include "DiningServer.h"
 #include <iostream>
 
-#define ROUNDS -1
 #define FORK_COUNT 5
 #define LOWER 3000
 #define UPPER 5000
 
+int ROUNDS = -1;
 
 pthread_mutex_t mutex;
 pthread_cond_t cond_var;
@@ -94,8 +94,17 @@ void* philosopherProcess(void* arg) {
 
 
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc > 1) {
+        try {
+            ROUNDS = std::stoi(argv[1]);
+            std::cout << "Argument received; launching with " << ROUNDS << " rounds.\n";
+        }
+        catch (...) { std::cerr << "Error with argument; launching with infinite rounds.\n"; }
+    }
     std::cout << "Starting Dining Philosophers with Dijkstra's Solution!\n";
+
+
     DiningServer server;
     std::vector<ThreadParam> params;
     for (int i = 0; i < 5; ++i) {
