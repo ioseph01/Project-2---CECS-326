@@ -8,7 +8,7 @@ both when available, or wait.
 #include "DiningServer.h"
 #include <iostream>
 
-#define ROUNDS 20
+#define ROUNDS -1
 #define FORK_COUNT 5
 #define LOWER 3000
 #define UPPER 5000
@@ -42,7 +42,7 @@ void* philosopherProcess(void* arg) {
     std::cout << "Philosopher #" << id << " is now Thinking\n";
     pthread_mutex_unlock(&mutex);
     
-    while (philosopher.rounds < ROUNDS) {
+    while ((philosopher.rounds < ROUNDS && 0 < ROUNDS) || ROUNDS < 0) {
         if (philosopher.state == State::Thinking) {
             sleep_ms(philosopher.time);
             philosopher.state = State::Hungry;
