@@ -1,6 +1,9 @@
+/*
+Turns out, this is actually Dijkstra's solution where philosophers either take 
+both when available, or wait.
+*/
+
 #include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
 #include "DiningServer.h"
 #include <iostream>
@@ -9,10 +12,7 @@
 #define FORK_COUNT 5
 #define LOWER 3000
 #define UPPER 5000
-/*
-Turns out, this is actually Dijkstra's solution where philosophers either take 
-both when available, or wait.
-*/
+
 
 pthread_mutex_t mutex;
 pthread_cond_t cond_var;

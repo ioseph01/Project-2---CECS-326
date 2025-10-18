@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <chrono>
-
 
 enum class State {Thinking, Hungry, Eating};
 
