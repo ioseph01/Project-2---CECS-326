@@ -6,6 +6,7 @@ both when available, or wait.
 #include <pthread.h>
 #include <time.h>
 #include "DiningServer.h"
+#include <iomanip>
 #include <iostream>
 
 #define FORK_COUNT 5
