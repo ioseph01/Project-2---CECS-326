@@ -9,8 +9,8 @@ both when available, or wait.
 #include <iostream>
 
 #define FORK_COUNT 5
-#define LOWER 3000
-#define UPPER 5000
+#define LOWER 1000
+#define UPPER 3000
 
 int ROUNDS = -1;
 
@@ -49,7 +49,7 @@ void* philosopherProcess(void* arg) {
 
             pthread_mutex_lock(&mutex);
             std::cout << "Philosopher #" << id << " thought for " 
-            << philosopher.time / 1000.0
+            << std::fixed << std::setprecision(2) << philosopher.time / 1000.0
             << " seconds and is now Hungry\n";
             pthread_mutex_unlock(&mutex);
 
@@ -60,7 +60,7 @@ void* philosopherProcess(void* arg) {
 
             server->returnForks(id);
             std::cout << "Philosopher #" << id << " has ate for " 
-            << philosopher.time / 1000.0
+            << std::fixed << std::setprecision(2) << philosopher.time / 1000.0
             << " seconds and is now Thinking\n";
             pthread_cond_broadcast(&cond_var);
 
