@@ -6,7 +6,7 @@ How it works so far:
 Main DiningServer Server acts as a fork/chopsticks & philosopher manager.
 Forks/chopsticks are stored in a vector and claimed by philosophers by turning into the philosopher id.
 
-In main, a philosopher process defines the lifetime and decision tree of each philosopher. Uses Dijkstra's solution where philosophers only get forks when both are available.
+In main, a philosopher process defines the lifetime and decision tree of each philosopher. Uses Asymmetric solution where philosophers only get forks when both are available.
 
 Also in main, the number of rounds defines how long the philosophers will simulate a Thinking-Hungry-Eating cycle - `#define ROUNDS -1` - with positive integers defining a finite number of rounds and -1 or negative integers defining and infinite number.
 
