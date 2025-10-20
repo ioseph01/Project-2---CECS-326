@@ -1,14 +1,11 @@
 /*
-Asymmetric solution where philosophers of even number take their left fork first
-and odd numbers take their right fork first. Both of which don't wait for both forks to be available
-to grab their first fork.
-By: Joseph Chang and Thomas Nguyen
+Turns out, this is actually Dijkstra's solution where philosophers either take 
+both when available, or wait.
 */
 
 #include <pthread.h>
 #include <time.h>
 #include "DiningServer.h"
-#include "DiningServer.cpp"
 #include <iomanip>
 #include <iostream>
 
@@ -80,34 +77,10 @@ void* philosopherProcess(void* arg) {
         else if (philosopher.state == State::Hungry) {
             pthread_mutex_lock(&mutex);
 
-            if (id % 2 == 0) // Even Numbered Philosophers take left fork before right fork
-            {
-                while (!server->leftAvailable(id))
-                    {
-                        pthread_cond_wait(&cond_var, &mutex);
-                    }
-                server->takeLeftFork(id);
-
-                while (!server->rightAvailable(id))
-                {
-                    pthread_cond_wait(&cond_var, &mutex);
-                }
-                server->takeRightFork(id);
+            while (!server->bothAvailable(id)) {
+                pthread_cond_wait(&cond_var, &mutex);
             }
-            else // Odd Numbered Philosophers take right fork before left fork
-            {
-                while (!server->rightAvailable(id))
-                {
-                    pthread_cond_wait(&cond_var, &mutex);
-                }
-                server->takeRightFork(id);
-
-                while (!server->leftAvailable(id))
-                {
-                    pthread_cond_wait(&cond_var, &mutex);
-                }
-                server->takeLeftFork(id);
-            }
+            server->takeForks(id);
             std::cout << "Philosopher #" << id << " is now Eating\n";
             
             pthread_mutex_unlock(&mutex);
@@ -130,7 +103,7 @@ int main(int argc, char* argv[]) {
         }
         catch (...) { std::cerr << "Error with argument; launching with infinite rounds.\n"; }
     }
-    std::cout << "Starting Dining Philosophers with Asymmetric Solution!\n";
+    std::cout << "Starting Dining Philosophers with Dijkstra's Solution!\n";
 
 
     DiningServer server;
