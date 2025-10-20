@@ -6,6 +6,7 @@ both when available, or wait.
 #include <pthread.h>
 #include <time.h>
 #include "DiningServer.h"
+#include "DiningServer.cpp"
 #include <iomanip>
 #include <iostream>
 
@@ -77,10 +78,34 @@ void* philosopherProcess(void* arg) {
         else if (philosopher.state == State::Hungry) {
             pthread_mutex_lock(&mutex);
 
-            while (!server->bothAvailable(id)) {
-                pthread_cond_wait(&cond_var, &mutex);
+            if (id % 2 == 0) // Even Numbered Philosophers take left fork before right fork
+            {
+                while (!server->leftAvailable(id))
+                    {
+                        pthread_cond_wait(&cond_var, &mutex);
+                    }
+                server->takeLeftFork(id);
+
+                while (!server->rightAvailable(id))
+                {
+                    pthread_cond_wait(&cond_var, &mutex);
+                }
+                server->takeRightFork(id);
             }
-            server->takeForks(id);
+            else // Odd Numbered Philosophers take right fork before left fork
+            {
+                while (!server->rightAvailable(id))
+                {
+                    pthread_cond_wait(&cond_var, &mutex);
+                }
+                server->takeRightFork(id);
+
+                while (!server->leftAvailable(id))
+                {
+                    pthread_cond_wait(&cond_var, &mutex);
+                }
+                server->takeLeftFork(id);
+            }
             std::cout << "Philosopher #" << id << " is now Eating\n";
             
             pthread_mutex_unlock(&mutex);
@@ -103,7 +128,7 @@ int main(int argc, char* argv[]) {
         }
         catch (...) { std::cerr << "Error with argument; launching with infinite rounds.\n"; }
     }
-    std::cout << "Starting Dining Philosophers with Dijkstra's Solution!\n";
+    std::cout << "Starting Dining Philosophers with Asymmetric Solution!\n";
 
 
     DiningServer server;
