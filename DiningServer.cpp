@@ -13,13 +13,8 @@ long random_long(long min, long max) {
 int DiningServer::Philosopher::m_next_id = 0;
 
 DiningServer::Philosopher::Philosopher() : id {m_next_id}, 
-    time {random_long(5000,10000)}, state {State::Thinking}, rounds {0} 
+    time {random_long(1000,3000)}, state {State::Thinking}, rounds {0} 
     { m_next_id++; }
-
-void DiningServer::takeForks(int philosopherNumber) {
-    takeLeftFork(philosopherNumber);
-    takeRightFork(philosopherNumber);
-}
 
 void DiningServer::takeLeftFork(int philosopherNumber) {
     if (forks[philosopherNumber] == philosopherNumber || forks[philosopherNumber] == -1) {
@@ -43,12 +38,13 @@ void DiningServer::returnForks(int philosopherNumber) {
     forks[(philosopherNumber + 1) % forks.size()] = -1;
 }
 
-bool DiningServer::bothAvailable(int philosopherNumber) {
+bool DiningServer::leftAvailable(int philosopherNumber) {
+    return (forks[philosopherNumber] == philosopherNumber || forks[philosopherNumber] == -1);
+}
+
+bool DiningServer::rightAvailable(int philosopherNumber) {
     int right = (philosopherNumber + 1) % forks.size();
-    return (forks[right] == philosopherNumber || forks[right] == -1)
-    &&
-    (forks[philosopherNumber] == philosopherNumber || forks[philosopherNumber] == -1)
-    ;
+    return (forks[right] == philosopherNumber || forks[right] == -1);
 }
 
 void DiningServer::print_forks() {
