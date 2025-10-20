@@ -1,6 +1,8 @@
 /*
-Turns out, this is actually Dijkstra's solution where philosophers either take 
-both when available, or wait.
+Asymmetric solution where philosophers of even number take their left fork first
+and odd numbers take their right fork first. Both of which don't wait for both forks to be available
+to grab their first fork.
+By: Joseph Chang and Thomas Nguyen
 */
 
 #include <pthread.h>
